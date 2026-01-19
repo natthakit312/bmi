@@ -13,14 +13,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (credentials?.email && credentials?.password) {
-          return {
-            id: "user-1",
-            email: credentials.email as string,
-            name: (credentials.email as string).split('@')[0],
-          };
-        }
-        return null;
+        // Simple mock login: allow any email, default to demo
+        const email = (credentials?.email as string) || "demo@example.com";
+        return {
+          id: "user-" + Math.random().toString(36).slice(2, 7),
+          email: email,
+          name: email.split('@')[0],
+        };
       },
     }),
   ],

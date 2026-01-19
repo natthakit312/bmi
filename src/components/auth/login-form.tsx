@@ -55,19 +55,17 @@ export default function LoginForm() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-            placeholder="you@example.com"
+            placeholder="demo@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Password (Optional for Demo)</label>
           <input
             type="password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -82,13 +80,35 @@ export default function LoginForm() {
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or just use</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={async () => {
+            setLoading(true);
+            await signIn("credentials", { 
+              email: "demo@example.com", 
+              password: "demo",
+              callbackUrl: "/" 
+            });
+          }}
+          disabled={loading}
+          className="w-full py-3 px-4 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
+        >
+          🚀 เข้าใช้งานด้วย Demo User
+        </button>
       </form>
 
       <div className="text-center text-sm text-gray-500">
-        Don't have an account?{" "}
-        <Link href="/register" className="font-semibold text-blue-600 hover:underline">
-          Sign up for free
-        </Link>
+        <p>ใช้ Email อะไรก็ได้เพื่อเข้าสู่ระบบ</p>
       </div>
     </div>
   );
