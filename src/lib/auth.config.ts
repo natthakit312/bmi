@@ -1,5 +1,6 @@
 export const authConfig = {
-  secret: process.env.AUTH_SECRET || "lucky_secret_key_fixed_67162110273_nattakit",
+  // ใส่ค่าความลับลงไปตรงๆ เพื่อป้องกันปัญหาบน Vercel Production
+  secret: "fixed_secret_for_demo_67162110273_nattakit_kaewbun",
   trustHost: true,
   pages: {
     signIn: "/login",

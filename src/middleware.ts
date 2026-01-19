@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/lib/auth.config";
 
+// สร้าง Middleware จาก Config ที่มี Secret แล้ว
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {

@@ -24,19 +24,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnProtected = 
-        !nextUrl.pathname.startsWith('/login') && 
-        !nextUrl.pathname.startsWith('/register') &&
-        nextUrl.pathname !== '/api/auth';
-
-      if (isOnProtected) {
-        if (isLoggedIn) return true;
-        return false;
-      }
-      return true;
-    },
-  },
 });
