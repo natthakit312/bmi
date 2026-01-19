@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -15,13 +15,16 @@ export default async function Home() {
     redirect("/login");
   }
 
+  // Get name from email if name is missing (for mock sessions)
+  const displayName = session.user?.name || session.user?.email?.split('@')[0] || "Guest";
+
   return (
     <main className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="max-w-xl mx-auto space-y-8">
         <header className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">BMI Pro</h1>
-            <p className="text-slate-500 text-sm font-medium">Hello, {session.user?.name}</p>
+            <p className="text-slate-500 text-sm font-medium">Hello, <span className="text-blue-600 font-bold capitalize">{displayName}</span></p>
           </div>
           <div className="flex gap-4">
              <Link 
