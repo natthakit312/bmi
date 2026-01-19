@@ -11,15 +11,21 @@ export async function GET(req: Request) {
     const period = searchParams.get("period") || "daily";
 
     // Fetch all logs for the user (for simplicity in aggregation)
-    // Production note: For millions of records, use SQL grouping functions
     const logs = await prisma.bmiLog.findMany({
       where: { userId: session.user.id },
       orderBy: { timestamp: "asc" },
     });
 
-    const groups: Record<string, { label: string; count: number; sumBmi: number; key: string }> = {};
+    interface GroupItem {
+      label: string;
+      count: number;
+      sumBmi: number;
+      key: string;
+    }
 
-    logs.forEach((log: any) => {
+    const groups: Record<string, GroupItem> = {};
+
+    logs.forEach((log) => {
       const date = new Date(log.timestamp);
       let key = "";
       let label = "";
