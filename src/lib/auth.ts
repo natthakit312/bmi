@@ -1,15 +1,10 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-
-// บังคับตั้งค่า Secret ให้ระบบเห็นตั้งแต่เริ่มรัน เพื่อแก้ปัญหาบน Vercel
-if (!process.env.AUTH_SECRET) {
-  process.env.AUTH_SECRET = "lucky_secret_key_for_bmi_pro_67162110273_3_nattakit";
-}
+import { authConfig } from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   session: { strategy: "jwt" },
-  secret: process.env.AUTH_SECRET,
-  trustHost: true,
   providers: [
     Credentials({
       name: "Credentials",
@@ -32,16 +27,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = !nextUrl.pathname.startsWith('/login') && !nextUrl.pathname.startsWith('/register');
+      const isOnDashboard = 
+        !nextUrl.pathname.startsWith('/login') && 
+        !nextUrl.pathname.startsWith('/register') &&
+        nextUrl.pathname !== '/';
       
-      if (isOnDashboard) {
+      const isRoot = nextUrl.pathname === '/';
+
+      if (isOnDashboard || isRoot) {
         if (isLoggedIn) return true;
-        return false; // Redirect to login
+        return false;
       }
       return true;
     },
-  },
-  pages: {
-    signIn: "/login",
   },
 });
