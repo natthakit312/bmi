@@ -23,20 +23,23 @@ export default function BmiCalculator() {
         ...classification
       });
 
-      // Save to database
+      // Save to LocalStorage for Vercel Demo
       setLoading(true);
       try {
-        await fetch("/api/bmi", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const historyRaw = localStorage.getItem("bmi_history") || "[]";
+        const history = JSON.parse(historyRaw);
+        const newRecord = {
+            id: Math.random().toString(36).substr(2, 9),
             weight: w,
             height: h,
             bmi,
             unitSystem: unit,
-            category: classification.category
-          }),
-        });
+            category: classification.category,
+            timestamp: new Date().toISOString()
+        };
+        history.unshift(newRecord);
+        localStorage.setItem("bmi_history", JSON.stringify(history.slice(0, 100)));
+        
         // Dispatch event for other components to refresh
         window.dispatchEvent(new Event("bmi-added"));
       } catch (err) {

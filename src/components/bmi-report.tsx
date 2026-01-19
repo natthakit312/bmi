@@ -21,11 +21,42 @@ export default function BmiReport() {
   const fetchReport = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/report?period=${period}`);
-      const json = await res.json();
-      if (Array.isArray(json)) {
-        setData(json);
-      }
+      const historyRaw = localStorage.getItem("bmi_history") || "[]";
+      const logs = JSON.parse(historyRaw);
+      
+      const groups: Record<string, any> = {};
+
+      logs.forEach((log: any) => {
+        const date = new Date(log.timestamp);
+        let key = "";
+        let label = "";
+
+        if (period === "daily") {
+          key = date.toISOString().split("T")[0];
+          label = new Date(key).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        } else if (period === "weekly") {
+          const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+          const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+          const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+          key = `${date.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+          label = `Week ${weekNum}, ${date.getFullYear()}`;
+        } else if (period === "monthly") {
+          key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+          label = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        } else if (period === "yearly") {
+          key = `${date.getFullYear()}`;
+          label = key;
+        }
+
+        if (!groups[key]) {
+          groups[key] = { label, count: 0, sumBmi: 0, key };
+        }
+        groups[key].count++;
+        groups[key].sumBmi += log.bmi;
+      });
+
+      const result = Object.values(groups).sort((a: any, b: any) => b.key.localeCompare(a.key));
+      setData(result as any);
     } catch (err) {
       console.error("Report fetch error", err);
     } finally {

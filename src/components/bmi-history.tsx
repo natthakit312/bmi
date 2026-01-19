@@ -19,8 +19,8 @@ export default function BmiHistory() {
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch("/api/bmi");
-      const data = await res.json();
+      const historyRaw = localStorage.getItem("bmi_history") || "[]";
+      const data = JSON.parse(historyRaw);
       if (Array.isArray(data)) {
         setLogs(data);
       }
@@ -44,8 +44,11 @@ export default function BmiHistory() {
     if (!confirm("Are you sure you want to delete this record?")) return;
     
     try {
-      await fetch(`/api/bmi/${id}`, { method: "DELETE" });
-      setLogs(logs.filter(log => log.id !== id));
+      const historyRaw = localStorage.getItem("bmi_history") || "[]";
+      let history = JSON.parse(historyRaw);
+      history = history.filter((log: any) => log.id !== id);
+      localStorage.setItem("bmi_history", JSON.stringify(history));
+      setLogs(history);
     } catch (err) {
       console.error("Failed to delete log", err);
     }

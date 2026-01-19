@@ -9,11 +9,45 @@ export default function MockGenerator() {
   const generate = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/bmi/mock", { method: "POST" });
-      if (res.ok) {
-        window.dispatchEvent(new Event("bmi-added"));
-        alert("Generated 50 historical records successfully!");
+      const historyRaw = localStorage.getItem("bmi_history") || "[]";
+      const history = JSON.parse(historyRaw);
+      
+      const newEntries = [];
+      const now = Date.now();
+      const oneDay = 86400000;
+
+      for (let i = 0; i < 50; i++) {
+        const timeOffset = Math.floor(Math.random() * 365 * oneDay);
+        const timestamp = new Date(now - timeOffset).toISOString();
+        const height = Math.floor(Math.random() * (190 - 150 + 1)) + 150;
+        const weight = Math.floor(Math.random() * (120 - 45 + 1)) + 45;
+        const hMeter = height / 100;
+        const bmi = parseFloat((weight / (hMeter * hMeter)).toFixed(1));
+        
+        let category = "Normal";
+        if (bmi < 18.5) category = "Underweight";
+        else if (bmi < 25) category = "Normal";
+        else if (bmi < 30) category = "Overweight";
+        else category = "Obese";
+
+        newEntries.push({
+          id: Math.random().toString(36).substr(2, 9),
+          bmi,
+          weight,
+          height,
+          unitSystem: "metric",
+          category,
+          timestamp,
+        });
       }
+
+      const updatedHistory = [...newEntries, ...history].sort((a, b) => 
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      ).slice(0, 100);
+
+      localStorage.setItem("bmi_history", JSON.stringify(updatedHistory));
+      window.dispatchEvent(new Event("bmi-added"));
+      alert("Generated 50 historical records in local storage!");
     } catch (err) {
       console.error(err);
     } finally {
