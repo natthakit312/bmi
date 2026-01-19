@@ -27,14 +27,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = 
+      const isOnProtected = 
         !nextUrl.pathname.startsWith('/login') && 
         !nextUrl.pathname.startsWith('/register') &&
-        nextUrl.pathname !== '/';
-      
-      const isRoot = nextUrl.pathname === '/';
+        nextUrl.pathname !== '/api/auth';
 
-      if (isOnDashboard || isRoot) {
+      if (isOnProtected) {
         if (isLoggedIn) return true;
         return false;
       }
