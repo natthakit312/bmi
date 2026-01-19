@@ -19,6 +19,22 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
+      // Save to localStorage
+      const usersRaw = localStorage.getItem("registered_users") || "[]";
+      const users = JSON.parse(usersRaw);
+      
+      // Check if user already exists
+      const existingUser = users.find((u: any) => u.email === email);
+      if (existingUser) {
+        setError("User with this email already exists");
+        setLoading(false);
+        return;
+      }
+      
+      // Add new user
+      users.push({ email, password, name });
+      localStorage.setItem("registered_users", JSON.stringify(users));
+
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
