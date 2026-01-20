@@ -53,16 +53,16 @@ export default function BmiCalculator() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-      <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">BMI Calculator</h2>
+    <div className="bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-800">
+      <h2 className="text-xl font-bold text-white mb-6 text-center">BMI Calculator</h2>
       
       <form onSubmit={handleCalculate} className="space-y-4">
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">Units</label>
+          <label className="text-sm font-medium text-gray-400">Units</label>
           <select 
             value={unit} 
             onChange={(e) => setUnit(e.target.value as UnitSystem)}
-            className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 bg-black border border-gray-700 text-white rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="metric">Metric (kg, cm)</option>
             <option value="imperial">Imperial (lb, in)</option>
@@ -71,30 +71,30 @@ export default function BmiCalculator() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1 relative">
-            <label className="text-sm font-medium text-gray-600">Weight</label>
+            <label className="text-sm font-medium text-gray-400">Weight</label>
             <input 
               type="number" 
               step="0.1"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder={unit === "metric" ? "70" : "154"}
-              className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 bg-black border border-gray-700 text-white rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="absolute right-3 bottom-2 text-xs text-gray-400 pointer-events-none">
+            <span className="absolute right-3 bottom-2 text-xs text-gray-500 pointer-events-none">
               {unit === "metric" ? "kg" : "lb"}
             </span>
           </div>
           <div className="flex flex-col gap-1 relative">
-            <label className="text-sm font-medium text-gray-600">Height</label>
+            <label className="text-sm font-medium text-gray-400">Height</label>
             <input 
               type="number" 
               step="0.1"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               placeholder={unit === "metric" ? "170" : "67"}
-              className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 bg-black border border-gray-700 text-white rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="absolute right-3 bottom-2 text-xs text-gray-400 pointer-events-none">
+            <span className="absolute right-3 bottom-2 text-xs text-gray-500 pointer-events-none">
               {unit === "metric" ? "cm" : "in"}
             </span>
           </div>

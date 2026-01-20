@@ -59,7 +59,7 @@ export default function MockGenerator() {
     <button
       onClick={generate}
       disabled={loading}
-      className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg text-xs font-bold hover:bg-amber-100 transition-all disabled:opacity-50"
+      className="flex items-center gap-2 px-3 py-1.5 bg-amber-900/30 text-amber-500 border border-amber-900/50 rounded-lg text-xs font-bold hover:bg-amber-900/50 transition-all disabled:opacity-50"
     >
       <Database className="w-3 h-3" />
       {loading ? "Generating..." : "Generate 50 Mock Records"}
