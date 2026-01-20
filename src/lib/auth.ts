@@ -9,15 +9,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        // Fast Login Mode: Skip DB check for login
-        // We just hash the username to create a consistent ID
-        if (credentials?.username) {
-            const name = credentials.username as string;
-            return {
-                id: `user-${name}`, // Consistent ID derived from username
-                name: name,
-            };
+        if (!credentials?.username || !credentials?.password) return null;
+
+        const user = await (prisma.user as any).findUnique({
+          where: { username: credentials.username as string },
+        });
+
+        if (!user) return null;
+
+        const passwordsMatch = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+
+        if (passwordsMatch) {
+          return {
+            id: user.id,
+            name: (user as any).username,
+          };
         }
+
         return null;
       },
     }),
