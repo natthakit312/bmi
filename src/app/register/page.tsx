@@ -41,34 +41,25 @@ export default function Register() {
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
 
-      // Get existing users
-      const users = JSON.parse(localStorage.getItem("bmi_users") || "[]");
+      const data = await res.json();
 
-      // Check if username already exists
-      if (users.some((u: any) => u.username === formData.username)) {
-        setError("Username already taken");
-        setIsLoading(false);
-        return;
+      if (!res.ok) {
+        throw new Error(data.error || "Registration failed");
       }
-
-      // Add new user
-      const newUser = {
-        id: Date.now().toString(),
-        username: formData.username,
-        password: formData.password, // In a real app, this should be hashed!
-        createdAt: new Date().toISOString(),
-      };
-
-      users.push(newUser);
-      localStorage.setItem("bmi_users", JSON.stringify(users));
 
       // Success
       router.push("/login");
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }

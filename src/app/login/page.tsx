@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Lock, LogIn, Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   const router = useRouter();
@@ -27,28 +28,17 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await signIn("credentials", {
+        username: formData.username,
+        password: formData.password,
+        redirect: false,
+      });
 
-      // Get users from localStorage
-      const users = JSON.parse(localStorage.getItem("bmi_users") || "[]");
-
-      // Find user
-      const user = users.find(
-        (u: any) => u.username === formData.username && u.password === formData.password
-      );
-
-      if (user) {
-        // Save current user
-        localStorage.setItem("bmi_currentUser", JSON.stringify({
-          id: user.id,
-          username: user.username
-        }));
-        
-        // Redirect to dashboard
-        router.push("/");
-      } else {
+      if (result?.error) {
         setError("Invalid username or password");
+      } else {
+        router.push("/");
+        router.refresh();
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");

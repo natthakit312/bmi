@@ -15,7 +15,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const log = await prisma.bmiLog.findUnique({
+    const log = await (prisma.bmiLog as any).findUnique({
       where: { id },
     });
 
@@ -23,7 +23,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Not found or unauthorized" }, { status: 404 });
     }
 
-    await prisma.bmiLog.delete({
+    await (prisma.bmiLog as any).delete({
       where: { id },
     });
 
