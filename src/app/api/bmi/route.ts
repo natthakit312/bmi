@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { weight, height, bmi, category, unitSystem } = await req.json();
+    const { weight, height, bmi, category, unitSystem, timestamp } = await req.json();
 
     const log = await prisma.bmiLog.create({
       data: {
@@ -38,6 +38,7 @@ export async function POST(req: Request) {
         bmi: Number(bmi),
         category,
         unitSystem,
+        timestamp: timestamp ? new Date(timestamp) : undefined,
       },
     });
 
