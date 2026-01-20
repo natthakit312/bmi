@@ -57,6 +57,14 @@ export default function Login() {
           <p className="mt-2 text-gray-400 font-medium">Sign in to continue to BMI Pro</p>
         </div>
 
+        <div className="bg-blue-900/20 border border-blue-900/50 p-4 rounded-xl mb-6 text-center">
+            <p className="text-blue-200 text-sm font-medium mb-1">Demo Credentials:</p>
+            <div className="flex justify-center gap-4 text-xs text-blue-300">
+              <span className="bg-blue-950/50 px-2 py-1 rounded">User: foremost07</span>
+              <span className="bg-blue-950/50 px-2 py-1 rounded">Pass: foremost07</span>
+            </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="p-3 bg-red-950/30 border border-red-900 text-red-400 text-sm rounded-lg font-medium">
