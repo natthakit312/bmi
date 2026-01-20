@@ -36,13 +36,15 @@ export default function Login() {
 
       if (result?.error) {
         setError("Invalid username or password");
+        setIsLoading(false);
       } else {
-        router.push("/");
-        router.refresh();
+        // Use window.location.href for a hard navigation to ensure 
+        // the session cookie is properly recognized by the server
+        window.location.href = "/";
       }
     } catch (err) {
+      console.error("Login Error:", err);
       setError("Something went wrong. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
