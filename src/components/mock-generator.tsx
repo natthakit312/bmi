@@ -9,18 +9,14 @@ export default function MockGenerator() {
   const generate = async () => {
     setLoading(true);
     try {
-      const historyRaw = localStorage.getItem("bmi_history") || "[]";
-      const history = JSON.parse(historyRaw);
-      
-      const newEntries = [];
       const now = Date.now();
       const oneDay = 86400000;
-
-      for (let i = 0; i < 50; i++) {
-        const timeOffset = Math.floor(Math.random() * 365 * oneDay);
-        const timestamp = new Date(now - timeOffset).toISOString();
+      
+      const requests = [];
+      for (let i = 0; i < 10; i++) { // Reduce to 10 for faster feedback
+        const timeOffset = Math.floor(Math.random() * 30 * oneDay); // Last 30 days
         const height = Math.floor(Math.random() * (190 - 150 + 1)) + 150;
-        const weight = Math.floor(Math.random() * (120 - 45 + 1)) + 45;
+        const weight = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
         const hMeter = height / 100;
         const bmi = parseFloat((weight / (hMeter * hMeter)).toFixed(1));
         
@@ -30,26 +26,26 @@ export default function MockGenerator() {
         else if (bmi < 30) category = "Overweight";
         else category = "Obese";
 
-        newEntries.push({
-          id: Math.random().toString(36).substr(2, 9),
-          bmi,
-          weight,
-          height,
-          unitSystem: "metric",
-          category,
-          timestamp,
-        });
+        requests.push(fetch("/api/bmi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            weight,
+            height,
+            bmi,
+            category,
+            unitSystem: "metric",
+            timestamp: new Date(now - timeOffset).toISOString(),
+          }),
+        }));
       }
 
-      const updatedHistory = [...newEntries, ...history].sort((a, b) => 
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      ).slice(0, 100);
-
-      localStorage.setItem("bmi_history", JSON.stringify(updatedHistory));
+      await Promise.all(requests);
       window.dispatchEvent(new Event("bmi-added"));
-      alert("Generated 50 historical records in local storage!");
+      alert("Generated 10 mock records in the database!");
     } catch (err) {
       console.error(err);
+      alert("Failed to generate records");
     } finally {
       setLoading(false);
     }

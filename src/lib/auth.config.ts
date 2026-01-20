@@ -7,17 +7,20 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = !nextUrl.pathname.startsWith('/login') && 
-                           !nextUrl.pathname.startsWith('/register') && 
-                           nextUrl.pathname !== '/' &&
-                           !nextUrl.pathname.startsWith('/api');
+      const isAuthPage = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register');
+      const isApiPage = nextUrl.pathname.startsWith('/api');
       
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && (nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register'))) {
-        return Response.redirect(new URL("/", nextUrl));
+      if (isApiPage) return true;
+
+      if (isAuthPage) {
+        if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
+        return true;
       }
+
+      if (!isLoggedIn) {
+        return false; // Redirects to login page automatically
+      }
+      
       return true;
     },
     jwt({ token, user }) {
@@ -33,5 +36,5 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
   },
-  providers: [], // Add providers in auth.ts
+  providers: [], // Add providers in auth.ts0
 } as NextAuthConfig;
