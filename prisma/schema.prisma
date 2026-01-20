@@ -12,17 +12,15 @@ model User {
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
-  bmiLogs   BmiLog[]
 }
 
 model BmiLog {
   id          String   @id @default(cuid())
-  userId      String
+  userId      String   // Just a string, no Foreign Key constraint
   bmi         Float
   weight      Float
   height      Float
   unitSystem  String   @default("metric")
   category    String
   timestamp   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
